@@ -11,7 +11,7 @@
     AI WebNavigator is a <a href="https://github.com/qwersyk/Newelle">Newelle</a> Extension that allows AI to navigate through websites: AI retrives data and uses it to deliver complete and reliable information.  
     <br/>
   </b>
-  During the process, the user is always shown the specific webpage the piece of information was found on, making it easy to double check and verify AI's answers.
+  The user is always shown the specific webpage the piece of information was found on, making it easy to double check and verify AI's answers.
 </p>
 
 <br/><br/>
