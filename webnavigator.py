@@ -2,6 +2,7 @@ from gi.repository import Gtk
 from .extra import find_module, install_module
 from .extensions import NewelleExtension
 from threading import Thread
+import os
 
 RELIABLE_PROMPT = """
 You are a skilled expert web scraper. 
@@ -97,6 +98,8 @@ class WebNavigator (NewelleExtension):
             chrome_options.add_argument("--headless")  # Uncomment this line if you want to run in headless mode
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
+        if os.environ.get("WAYLAND_DISPLAY"):
+            chrome_options.add_argument("--ozone-platform=wayland")
 
         service = Service()  # Update this path to where your chromedriver is located
         driver = webdriver.Chrome(service=service, options=chrome_options)
