@@ -1,5 +1,5 @@
 from gi.repository import Gtk
-from .utility.extra import find_module, install_module
+from .utility.pip import find_module, install_module
 from .extensions import NewelleExtension
 from threading import Thread
 import os
