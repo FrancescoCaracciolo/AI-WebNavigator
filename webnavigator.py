@@ -39,7 +39,9 @@ class WebNavigator (NewelleExtension):
     name = "Web Navigator"
     driver = None
     old_pages = {}
-
+    indexed_pages = []
+    rag_index = None
+   
     def get_extra_settings(self) -> list:
         return [
             ExtraSettings.ToggleSetting("headless", "Headless Mode", "Run in headless mode - don't show browser window", False),
@@ -61,7 +63,17 @@ class WebNavigator (NewelleExtension):
         documents = []
         for url, content in self.old_pages.items():
             documents.append("text:" + content)
-        content = self.rag.query_document(query, documents, 1024)
+        if self.rag_index is None:
+            self.rag_index = self.rag.build_index(documents, 1024)
+            self.indexed_pages += documents
+        else:
+            diff = []
+            for document in documents:
+                if document not in self.indexed_pages:
+                    diff.append(document)
+            self.rag_index.insert(diff)
+            self.indexed_pages += diff
+        content = self.rag_index.query(query)
         return "\n".join(content)
         
     def get_additional_prompts(self) -> list:
@@ -127,12 +139,14 @@ class WebNavigator (NewelleExtension):
         return history, prompts
 
     def get_answer(self, codeblock: str, lang: str) -> str | None:
+        cleaned = self.clean_html_to_markdown(self.get_html_from_url(codeblock))
+
+        self.old_pages[codeblock] = cleaned
         if lang == "openlink":
-            return "Webnav Result: " + self.clean_html_to_markdown(self.get_html_from_url(codeblock))
+            return "Webnav Result: " + cleaned 
         return None
 
     def open_browser(self):
-
         from selenium import webdriver
         from selenium.webdriver.chrome.service import Service
         from selenium.webdriver.chrome.options import Options
@@ -156,9 +170,10 @@ class WebNavigator (NewelleExtension):
         from selenium.webdriver.support.ui import WebDriverWait
         from selenium.webdriver.support import expected_conditions as EC
         from selenium.webdriver.common.by import By
+        if self.driver is None:
+            self.open_browser()
         self.driver.get(url)
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
-        self.old_pages[url] = self.driver.page_source
         return self.driver.page_source 
     
     def clean_html_to_markdown(self, html_content):
