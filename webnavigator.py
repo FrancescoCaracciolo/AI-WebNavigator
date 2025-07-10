@@ -81,7 +81,7 @@ class WebNavigator (NewelleExtension):
                 "description": "Open a link from the given page",
                 "editable": True,
                 "show_in_settings": True,
-                "default": True,
+                "default": False,
                 "text": "- To open a website and get its content, use: \n```openlink\nlink\n```\nOpen maximum one link per message. The website will be shown to the user."
             },
             {
@@ -100,6 +100,25 @@ class WebNavigator (NewelleExtension):
         # Give the codeblocks that are replaced by tool calls
         return ["openlink"]
 
+    def get_context(self, query: str):
+        if self.rag is None:
+            return ""
+        documents = []
+        for url, content in self.old_pages.items():
+            documents.append("text:" + content)
+        if self.rag_index is None:
+            self.rag_index = self.rag.build_index(documents, 1024)
+            self.indexed_pages += documents
+        else:
+            diff = []
+            for document in documents:
+                if document not in self.indexed_pages:
+                    diff.append(document)
+            self.rag_index.insert(diff)
+            self.indexed_pages += diff
+        content = self.rag_index.query(query)
+        return "\n".join(content)
+    
     def preprocess_history(self, history: list, prompts: list) -> tuple[list, list]:
         # Preprocess the history before it is sent to the LLM
         query = ""
