@@ -1,6 +1,6 @@
 # AI WebNavigator
 
-<p >
+<p>
   <img align="left" width="300" src="https://github.com/user-attachments/assets/2bc5b4ca-dabc-4b9d-9092-5f0d21765fa5"/>
 
   <a href="https://github.com/topics/newelle-extension">
@@ -16,19 +16,22 @@
 <br/><br/>
 
 # Overview
-https://github.com/user-attachments/assets/cc3a3b1f-ae6d-4404-8b3d-3a027857b125
+
+https://github.com/user-attachments/assets/d4fb8711-ec76-46c9-8ba6-28889c4b6069
 
 ## Use Cases
-* Get "resumes" of websites, wrapping them up
+* Get "summaries" of websites, wrapping them up
 * Quickly find specific pieces of information in websites
 * Get up to date data
 * Find hidden resources in websites
 
 ## How does it work
-1. The LLM has the ability to open a Chrome web browser
+1. The LLM has the ability to open the integrated Newelle Browser
 2. The LLM can visit any link
 3. When a link is visited, the web page is scraped and cleaned to only get the links and the relevant text in it
 4. The LLM answers based on these information
+
+The extension also support integration with buit-in Newelel RAG in order to provide relevant information about websites.
 
 # Installation
 - Download and Install [Newelle](https://flathub.org/apps/io.github.qwersyk.Newelle)
