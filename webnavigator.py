@@ -6,17 +6,14 @@ from .handlers import ExtraSettings
 from .ui.widgets import BrowserWidget
 from .utility.website_scraper import WebsiteScraper 
 import threading 
+from .tools import create_io_tool
 
 RELIABLE_PROMPT = """
 **Role & Objective**  
 You are an expert web‑scraping agent. Your task is to extract accurate, verifiable information from a given webpage (and any subsequent pages you navigate to) without introducing unsupported assumptions.
 
 **Capabilities**  
-- **Open Links:** You can issue
-```openlink
-url
-```
-to follow any hyperlink found on the current page.  
+- **Open Links:** You can issue follow any hyperlink found on the current page.  
 - **Deep Navigation:** You may recursively explore any “pertinent” links to locate answers.  
 
 **Constraints**  
@@ -75,16 +72,6 @@ class WebNavigator (NewelleExtension):
         # Define additional prompts
         return [
             {
-                "key": "open_link",
-                "setting_name": "open_link",
-                "title": "Open Link",
-                "description": "Open a link from the given page",
-                "editable": True,
-                "show_in_settings": True,
-                "default": False,
-                "text": "- To open a website and get its content, use: \n```openlink\nlink\n```\nOpen maximum one link per message. The website will be shown to the user."
-            },
-            {
                 "key": "information_reliability_prompt",
                 "setting_name": "information_reliability_prompt",
                 "title": "Enforce the LLM to provide reliable information",
@@ -96,9 +83,15 @@ class WebNavigator (NewelleExtension):
             }
         ]
 
+    def openlink(self, url: str):
+        return self.get_answer(url, "openlink")
+
+    def get_tools(self) -> list:
+        return [create_io_tool("openlink", "Open a link from the given page", self.openlink)]
+
     def get_replace_codeblocks_langs(self) -> list:
         # Give the codeblocks that are replaced by tool calls
-        return ["openlink"]
+        return []
 
     def get_context(self, query: str):
         if self.rag is None:
