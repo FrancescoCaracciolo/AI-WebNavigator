@@ -26,7 +26,7 @@ https://github.com/user-attachments/assets/d4fb8711-ec76-46c9-8ba6-28889c4b6069
 * Find hidden resources in websites
 
 ## How does it work
-1. The LLM has the ability to open the integrated Newelle Browser
+1. The LLM has the ability to open the integrated Newelle Browser and use tools to interact with the web page
 2. The LLM can visit any link
 3. When a link is visited, the web page is scraped and cleaned to only get the links and the relevant text in it
 4. The LLM answers based on these information
